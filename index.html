@@ -51,8 +51,15 @@
             box-shadow: 0 0 20px rgba(217, 70, 239, 0.5);
         }
         .btn-submit:disabled {
-            opacity: 0.7;
+            opacity: 0.5;
             cursor: not-allowed;
+            transform: scale(1);
+            box-shadow: none;
+        }
+        #privacidade-aviso {
+            max-width: 600px;
+            margin-top: 2rem;
+            text-align: center;
         }
     </style>
 </head>
@@ -95,7 +102,7 @@
 
             <!-- Sistema de Votação -->
             <div class="card p-6">
-                <h3 class="font-teko text-3xl font-bold text-pink-400 mb-4">🗳️Votação de Porjetos</h3>
+                <h3 class="font-teko text-3xl font-bold text-pink-400 mb-4">🗳️Votação de Projetos</h3>
                 <ul class="space-y-3 text-gray-300 list-disc list-inside">
                     <li>Os partidos poderão <strong>propor projetos</strong>.</li>
                     <li>Os <strong>representantes</strong> poderão votar em projetos.</li>
@@ -139,6 +146,9 @@
                 <h2 class="font-teko text-4xl font-bold text-center mb-6 gradient-text">Formulário de Inscrição</h2>
                 <div id="form-container">
                     <form id="party-form" class="space-y-6">
+                        <!-- CAMPO OCULTO PARA O IP -->
+                        <input type="hidden" name="Endereço IP" id="ip-address">
+
                         <div>
                             <label for="party-name" class="block text-sm font-medium text-gray-300 mb-1">Nome do Partido</label>
                             <input type="text" id="party-name" name="Nome do Partido" required class="w-full form-input rounded-md p-2">
@@ -163,11 +173,24 @@
                             <label for="discord-id" class="block text-sm font-medium text-gray-300 mb-1">Discord (para contato)</label>
                             <input type="text" id="discord-id" name="Discord" required class="w-full form-input rounded-md p-2">
                         </div>
+
+                        <!-- AVISO DE PRIVACIDADE -->
+                        <div class="flex items-center justify-center text-xs text-gray-400 pt-2">
+                            <input type="checkbox" id="privacidade-box" name="Privacidade" required class="mr-2">
+                            <label for="privacidade-box" class="cursor-pointer">
+                                Afirmo que os dados fornecidos para o processo de candidatura são reais e todos os membros citados estão cientes e concordam com a participação.
+                            </label>
+                        </div>
                         <div class="text-center">
                             <button type="submit" id="submit-button" class="btn-submit text-white font-bold py-3 px-8 rounded-full text-lg w-full md:w-auto">
                                 Enviar Candidatura
                             </button>
                         </div>
+
+                        <div class="flex items-center justify-center text-xs text-gray-400 pt-2" id="privacidade-aviso">
+                            <p>Ao clicar em Enviar, você concorda que os dados informados serão analizados pela administração do servidor e que a inscrição não é garantia de que seu grupo proseguirá para a proxima fase. Sua inscrisão só será confirmada quando uma mensagem for enviada no seu discord por um administrador. Seu endereço de IP será registrado junto ao formulário para fins de segurança e moderação da comunidade.</p>
+                        </div>
+                        
                     </form>
                 </div>
                 <div id="confirmation-message" class="hidden text-center">
@@ -185,19 +208,45 @@
 
     <!-- Footer -->
     <footer class="text-center py-8 mt-12 border-t border-gray-800">
-        <p class="text-gray-500">&copy; 2025 Arísia RP. Todos os direitos reservados.</p>
+        <p class="text-gray-500">&copy; 2025 EidenFox. Todos os direitos reservados.</p>
     </footer>
 
     <script>
-        // --- INÍCIO DA LÓGICA DO FORMULÁRIO ---
+        // --- SCRIPT PARA CAPTURAR O IP ---
+        window.addEventListener('load', () => {
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    const ipField = document.getElementById('ip-address');
+                    if (ipField) {
+                        ipField.value = data.ip;
+                    }
+                })
+                .catch(error => {
+                    console.error('Não foi possível obter o endereço IP:', error);
+                    const ipField = document.getElementById('ip-address');
+                    if (ipField) {
+                        ipField.value = 'IP não disponível';
+                    }
+                });
+        });
+
+        // --- LÓGICA DO FORMULÁRIO ---
         const form = document.getElementById('party-form');
-        const nickname = document.getElementById('ingame-nick');
-        const discord = document.getElementById('discord-id');
         const submitButton = document.getElementById('submit-button');
         const formContainer = document.getElementById('form-container');
         const confirmationMessage = document.getElementById('confirmation-message');
         const errorMessage = document.getElementById('error-message');
+        const privacyCheckbox = document.getElementById('privacidade-box');
 
+        // SUGESTÃO: Desabilitar o botão de envio inicialmente
+        submitButton.disabled = true;
+
+        // SUGESTÃO: Adicionar um "ouvinte" para a caixa de seleção
+        privacyCheckbox.addEventListener('change', function() {
+            // Habilita ou desabilita o botão com base se a caixa está marcada
+            submitButton.disabled = !this.checked;
+        });
 
         form.addEventListener('submit', async function(event) {
             event.preventDefault(); // Impede o envio padrão do formulário.
@@ -208,7 +257,6 @@
 
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
-            
             
             // Site para Receber os formulários: https://formspree.io/
             const formspreeEndpoint = 'https://formspree.io/f/xovlwjql';
