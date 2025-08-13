@@ -16,9 +16,17 @@
             font-family: 'Teko', sans-serif;
         }
         .gradient-text {
-            background: linear-gradient(to right, #a78bfa, #f472b6);
+            background: linear-gradient(to right, #7eff92, #00930a);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+        .btn-submit {
+            background: linear-gradient(to right, #8faf2f, #2ea787); 
+            transition: all 0.3s ease;
+        }
+        .btn-submit:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(217, 70, 239, 0.5);
         }
     </style>
 </head>
@@ -27,7 +35,7 @@
         <h1 class="font-teko text-8xl font-bold gradient-text mb-4">404</h1>
         <h2 class="font-teko text-3xl md:text-4xl font-bold mb-2">Página não encontrada</h2>
         <p class="text-lg text-gray-400 mb-8">Ops! Parece que você tentou acessar uma página que não existe.</p>
-        <a href="./" class="btn-submit text-white font-bold py-3 px-8 rounded-full text-lg transition-all" style="background: linear-gradient(to right, #8b5cf6, #d946ef);">
+        <a href="./" class="btn-submit text-white font-bold py-3 px-8 rounded-full text-lg transition-all">
             Voltar para Inscrições
         </a>
     </div>
