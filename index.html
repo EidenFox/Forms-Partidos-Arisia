@@ -148,7 +148,16 @@
 
         <!-- Application Form -->
         <section id="form-section" class="mt-20 max-w-2xl mx-auto">
-            <div class="card p-8">
+              <!-- SEÇÃO DE ENVIOS ENCERRADOS - Para reativar o formulário, comente ou remova esta seção -->
+            <div id="closed-message" class="card p-8 text-center">
+                <h2 class="font-teko text-4xl font-bold text-yellow-400 mb-4">Envios Encerrados</h2>
+                <p class="text-gray-300 text-lg">O período de candidaturas para o Parlamento de Arísia foi encerrado. Agradecemos a todos os participantes!</p>
+            </div>
+            <!-- FIM DA SEÇÃO DE ENVIOS ENCERRADOS -->
+            
+
+
+            <div id="form-wrapper" class="card p-8">
                 <h2 class="font-teko text-4xl font-bold text-center mb-6 gradient-text">Formulário de Inscrição</h2>
                 <div id="form-container">
                     <form id="party-form" class="space-y-6">
@@ -218,6 +227,21 @@
     </footer>
 
     <script>
+        // --- CONTROLE DE EXIBIÇÃO DO FORMULÁRIO ---
+        // Altere o valor para false ou 0 para ABRIR as inscrições.
+        // Altere o valor para true ou 1 para ENCERRAR as inscrições.
+        const encerrado = true;
+
+        const closedMessage = document.getElementById('closed-message');
+        const formWrapper = document.getElementById('form-wrapper');
+
+        if (encerrado === true || encerrado === 1) {
+            closedMessage.classList.remove('hidden');
+            formWrapper.classList.add('hidden');
+        } else {
+            closedMessage.classList.add('hidden');
+            formWrapper.classList.remove('hidden');
+        }
         // --- SCRIPT PARA CAPTURAR O IP ---
         window.addEventListener('load', () => {
             fetch('https://api.ipify.org?format=json')
